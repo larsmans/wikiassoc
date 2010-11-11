@@ -31,10 +31,29 @@ For example, say you want word associations in Latin. Fetch the files
 and run the Wikiassoc program as
 
     wikiassoc lawiki-YYYYMMDD-page.sql.gz lawiki-YYYYMMDD-pagelinks.sql.gz \
-      | gzip -c > lawiki-associations.txt
+      | gzip -c > lawiki-associations.gz
 
 (Using gzip is highly recommended, as Wikiassoc produces a lot of output.)
 
 You will get a log of what's happening on stderr. Note that Wikiassoc takes
 a *lot* of memory; on the larger Wikipedias, it may be as much as 50GB or
 more.
+
+In lawiki-associations.gz, you will find a text file with terms and indented
+associations for the term:
+
+
+
+
+What does it do?
+----------------
+
+For each article in the Wikipedia database dump, Wikiassoc looks at all the
+articles that can be reached by following at most two links. It then weighs
+all these articles by a scheme called pf-ibf, or path frequency-inverse
+backlink frequency. For further explanation, refer to:
+
+Nakayama, K., Hara, T. and Nishio, S.: Wikipedia Mining for an Association Web
+Thesaurus Construction, in Proc. International Conference on Web Information
+Systems Engineering (WISE), pp. 322-334 (2007).
+http://wikipedia-lab.org/en/images/9/90/Wise2007.pdf
