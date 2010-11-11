@@ -1,0 +1,40 @@
+Wikiassoc
+=========
+
+This is Wikiassoc, a tool for generating term associations by analyzing the
+link structure of Wikipedia (or any other wiki built on the MediaWiki
+software).
+
+To build and install Wikiassoc, you need a fairly modern C++ compiler
+(tested with GCC 4.3 and Open64 4.2.2.2), the Boost libraries from
+http://www.boost.org/ (including the Boost IOStreams library), zlib from
+http://zlib.net/ and bzlib from http://www.bzip.org/. It is highly advisable
+to use a C++ compiler that supports OpenMP, as Wikiassoc will be very slow
+without it.
+
+Wikiassoc uses the GNU build tools. Enter
+    ./configure && make && make install
+or see the file INSTALL for more detailed instructions. Currently, this only
+installs a binary called wikiassoc.
+
+
+Usage
+-----
+
+To compile an associative thesaurus with Wikiassoc, first download some files
+from the Wikimedia database dump repository at http://download.wikimedia.org .
+For example, say you want word associations in Latin. Fetch the files
+
+    lawiki-YYYYMMDD-page.sql.gz
+    lawiki-YYYYMMDD-pagelinks.sql.gz
+
+and run the Wikiassoc program as
+
+    wikiassoc lawiki-YYYYMMDD-page.sql.gz lawiki-YYYYMMDD-pagelinks.sql.gz \
+      | gzip -c > lawiki-associations.txt
+
+(Using gzip is highly recommended, as Wikiassoc produces a lot of output.)
+
+You will get a log of what's happening on stderr. Note that Wikiassoc takes
+a *lot* of memory; on the larger Wikipedias, it may be as much as 50GB or
+more.
