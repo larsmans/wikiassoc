@@ -25,6 +25,8 @@ class Matrix;
 // TODO: put this in config.h
 typedef float Real;
 
+extern bool quiet;      // disable log output to stderr
+
 void logmsg(char const *);
 void logmsg(std::string const &);
 std::istream *open_input(char const *);

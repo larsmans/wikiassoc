@@ -22,8 +22,9 @@ namespace {
     void usage(char const *progname)
     {
         std::cerr << "usage: " << progname
-                  << " [-n N] [-w] pagedump linkdump\n"
+                  << " [-n N] [-qw] pagedump linkdump\n"
                   << "    -n N  output N associations per term, default 10\n"
+                  << "    -q    quiet; no log output to standard error\n"
                   << "    -w    output pf-ibf weights with associations\n"
         ;
         std::exit(1);
@@ -35,7 +36,7 @@ int main(int argc, char *argv[])
     bool output_weights = false;
     std::size_t n_out = 10;    // number of associations per term to output
 
-    for (int opt; (opt = getopt(argc, argv, "n:w")) != -1; ) {
+    for (int opt; (opt = getopt(argc, argv, "n:qw")) != -1; ) {
         switch (opt) {
           case 'n':
             try {
@@ -43,6 +44,9 @@ int main(int argc, char *argv[])
             } catch (boost::bad_lexical_cast const &e) {
                 usage(argv[0]);
             }
+            break;
+          case 'q':
+            quiet = true;
             break;
           case 'w':
             output_weights = true;

@@ -14,8 +14,13 @@
 #include "config.h"
 #include "wikiassoc.hpp"
 
+bool quiet = false;
+
 void logmsg(char const *msg)
 {
+    if (quiet)
+        return;
+
     time_t t = std::time(0);
     char *timetxt = std::ctime(&t);         // XXX: not reentrant
     *std::strchr(timetxt, '\n') = '\0';     // ISO guarantees a '\n'
