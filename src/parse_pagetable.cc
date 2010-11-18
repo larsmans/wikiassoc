@@ -12,12 +12,13 @@
 #include <boost/spirit/include/classic_assign_actor.hpp>
 #include <boost/spirit/include/classic_assign_key_actor.hpp>
 #include <boost/spirit/include/support_istream_iterator.hpp>
-#include <boost/unordered_map.hpp>
 #include <iostream>
 #include <string>
 #include <utility>
 
 #include "wikiassoc.hpp"
+
+#include "article.hpp"
 
 using namespace BOOST_SPIRIT_CLASSIC_NS;
 using namespace std;
@@ -28,17 +29,11 @@ using namespace std;
  */
 struct AssignTitleActor
 {
+    ArticleSet &articles;
     unsigned &cur_id, &cur_ns;
-    boost::unordered_map<unsigned, unsigned> &wid_to_id;
-    boost::unordered_map<string, unsigned> &title_to_wid;
-    vector<string> &titles;
 
-    AssignTitleActor(unsigned &id, unsigned &ns,
-                     boost::unordered_map<unsigned, unsigned> &widtoid,
-                     boost::unordered_map<string, unsigned> &titletowid,
-                     vector<string> &ts)
-      : cur_id(id), cur_ns(ns), wid_to_id(widtoid),
-        title_to_wid(titletowid), titles(ts)
+    AssignTitleActor(ArticleSet &arts, unsigned &id, unsigned &ns)
+      : articles(arts), cur_id(id), cur_ns(ns)
     {
     }
 
@@ -48,9 +43,7 @@ struct AssignTitleActor
         if (cur_ns == WIKIPEDIA_MAIN_NS) {
             string title(s,end);
             sql_unescape(title);
-            titles.push_back(title);
-            wid_to_id[cur_id] = titles.size() - 1;
-            title_to_wid[title] = cur_id;
+            articles.push_back(Article(title, cur_id));
         }
     }
 };
@@ -67,10 +60,8 @@ struct InsertPage : public grammar<InsertPage>
     AssignTitleActor assign_title;
     unsigned cur_id, cur_ns;
 
-    InsertPage(boost::unordered_map<unsigned, unsigned> &widtoid,
-               boost::unordered_map<string, unsigned> &titletowid,
-               vector<string> &ts)
-      : assign_title(cur_id, cur_ns, widtoid, titletowid, ts)
+    InsertPage(ArticleSet &articles)
+      : assign_title(articles, cur_id, cur_ns)
     {
     }
 
@@ -140,10 +131,7 @@ struct InsertPage : public grammar<InsertPage>
     };
 };
 
-void parse_pagetable(istream &input, 
-                     boost::unordered_map<unsigned, unsigned> &wid_to_id,
-                     boost::unordered_map<string, unsigned> &title_to_wid,
-                     vector<string> &titles)
+void parse_pagetable(istream &input, ArticleSet &articles)
 {
     namespace spirit = boost::spirit;
 
@@ -151,7 +139,6 @@ void parse_pagetable(istream &input,
     logmsg("parsing page table");
 
     parse_info<spirit::istream_iterator> info;
-    info = parse(spirit::istream_iterator(input),
-                 spirit::istream_iterator(),
-                 InsertPage(wid_to_id, title_to_wid, titles), space_p);
+    info = parse(spirit::istream_iterator(input), spirit::istream_iterator(),
+                 InsertPage(articles), space_p);
 }

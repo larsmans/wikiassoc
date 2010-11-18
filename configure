@@ -3714,6 +3714,14 @@ else
 fi
 
 
+ac_fn_cxx_check_header_mongrel "$LINENO" "boost/multi_index_container.hpp" "ac_cv_header_boost_multi_index_container_hpp" "$ac_includes_default"
+if test "x$ac_cv_header_boost_multi_index_container_hpp" = xyes; then :
+
+else
+  as_fn_error $? "Boost.MultiIndex library not found" "$LINENO" 5
+fi
+
+
 ac_fn_cxx_check_header_mongrel "$LINENO" "boost/unordered_map.hpp" "ac_cv_header_boost_unordered_map_hpp" "$ac_includes_default"
 if test "x$ac_cv_header_boost_unordered_map_hpp" = xyes; then :
 

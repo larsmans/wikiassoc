@@ -15,6 +15,7 @@
 
 #include "wikiassoc.hpp"
 
+#include "article.hpp"
 #include "ibf.hpp"
 #include "matrix.hpp"
 
@@ -61,27 +62,20 @@ int main(int argc, char *argv[])
     argv += optind;
 
     try {
-        using boost::scoped_ptr;
-        using boost::unordered_map;
-
         // fail early if input files not readable
-        scoped_ptr<std::istream> pagefile(open_input(argv[0])),
-                                 linkfile(open_input(argv[1]));
+        boost::scoped_ptr<std::istream> pagefile(open_input(argv[0])),
+                                        linkfile(open_input(argv[1]));
 
-        unordered_map<unsigned, unsigned> wid_to_id;
-        unordered_map<std::string, unsigned> title_to_wid;
-        std::vector<std::string> titles;
+        ArticleSet articles;
 
-        parse_pagetable(*pagefile, wid_to_id, title_to_wid, titles);
+        parse_pagetable(*pagefile, articles);
         pagefile.reset();
 
-        Matrix a(titles.size()),
-               r(titles.size());
-        std::vector<unsigned> incoming(titles.size());
-        parse_linktable(*linkfile, a, wid_to_id, title_to_wid, incoming);
+        Matrix a(articles.size()),
+               r(articles.size());
+        std::vector<unsigned> incoming(articles.size());
+        parse_linktable(*linkfile, articles, a, incoming);
         linkfile.reset();
-        wid_to_id.clear();
-        title_to_wid.clear();
 
         logmsg("applying ibf transformation");
         InverseBacklinkFrequency ibf(incoming);
@@ -97,7 +91,7 @@ int main(int argc, char *argv[])
         r.transform(normalize<2>);
 
         logmsg("writing output");
-        r.output(n_out, output_weights, titles);
+        r.output(n_out, output_weights, articles);
 
         logmsg("done");
     } catch (std::bad_alloc const &e) {

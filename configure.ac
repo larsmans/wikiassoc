@@ -21,6 +21,8 @@ AC_CHECK_LIB([z], [gzread])
 # Checks for header files.
 AC_CHECK_HEADER([boost/iostreams/filter/gzip.hpp],,
                 [AC_MSG_ERROR([Boost.Iostreams library not found])])
+AC_CHECK_HEADER([boost/multi_index_container.hpp],,
+                [AC_MSG_ERROR([Boost.MultiIndex library not found])])
 AC_CHECK_HEADER([boost/unordered_map.hpp],,
                 [AC_MSG_ERROR([boost/unordered_map.hpp not found])])
 AC_CHECK_HEADER([boost/spirit/include/classic_core.hpp],,

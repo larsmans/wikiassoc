@@ -14,6 +14,8 @@
 #include <vector>
 
 #include "wikiassoc.hpp"
+
+#include "article.hpp"
 #include "matrix.hpp"
 
 namespace {
@@ -32,7 +34,7 @@ namespace {
  * If weights == true, output scores as well.
  */
 void Matrix::output(std::size_t n_out, bool weights,
-                    std::vector<std::string> const &titles) const
+                    ArticleSet const &articles) const
 {
     int i, n = nrows();
 
@@ -49,9 +51,9 @@ void Matrix::output(std::size_t n_out, bool weights,
             );
 
         std::stringstream s;
-        s << titles[i] << "\n";
+        s << articles[i].title << "\n";
         for (size_t j=0; j<related.size(); j++) {
-            s << "    " << titles[related[j].first];
+            s << "    " << articles[related[j].first].title;
             if (weights)
                 s << " " << related[j].second;
             s << "\n";

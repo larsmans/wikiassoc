@@ -12,7 +12,6 @@
 
 #include <boost/unordered_map.hpp>
 #include <algorithm>
-#include <cassert>
 #include <iosfwd>
 #include <utility>
 #include <vector>
@@ -96,7 +95,7 @@ class Matrix {
             rows[i].erase(i);
     }
 
-    void output(std::size_t, bool, std::vector<std::string> const &) const;
+    void output(std::size_t, bool, ArticleSet const &) const;
 
     /**
      * Apply transformation (function/functional) op to all non-zero elements

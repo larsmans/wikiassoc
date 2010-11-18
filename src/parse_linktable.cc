@@ -17,6 +17,8 @@
 #include <utility>
 
 #include "wikiassoc.hpp"
+
+#include "article.hpp"
 #include "matrix.hpp"
 
 using namespace BOOST_SPIRIT_CLASSIC_NS;
@@ -30,39 +32,42 @@ using namespace std;
  */
 struct AssignLinkActor
 {
+    ArticleSet &articles;
     Matrix &mat;
-    boost::unordered_map<unsigned, unsigned> const &wid_to_id;
-    boost::unordered_map<string, unsigned> const &title_to_wid;
     vector<unsigned> &incoming;
     unsigned &cur_from, &cur_ns;
 
-    AssignLinkActor(unsigned &from, unsigned &ns, Matrix &m,
-                    boost::unordered_map<unsigned, unsigned> const &widtoid,
-                    boost::unordered_map<string, unsigned> const &titletoid,
+    AssignLinkActor(unsigned &from, unsigned &ns, ArticleSet &arts, Matrix &m,
                     vector<unsigned> &incoming_)
-      : cur_from(from), cur_ns(ns), mat(m),
-        wid_to_id(widtoid), title_to_wid(titletoid), incoming(incoming_)
+      : articles(arts), cur_from(from), cur_ns(ns), mat(m),
+        incoming(incoming_)
     {
     }
 
     template <typename Iter>
     void operator()(Iter s, Iter end) const
     {
-        if (cur_ns == WIKIPEDIA_MAIN_NS) {
-            string title(s,end);
-            sql_unescape(title);
-            boost::unordered_map<string, unsigned>::const_iterator to(
-                    title_to_wid.find(title)
-            );
+        if (cur_ns != WIKIPEDIA_MAIN_NS)
+            return;
 
-            if (to != title_to_wid.cend())
-                try {
-                    mat(wid_to_id.at(cur_from),
-                        wid_to_id.at(to->second)) = 1.;
-                    incoming[wid_to_id.at(to->second)] += 1;
-                } catch (std::out_of_range const &e) {
-                }
-        }
+        string title(s,end);
+        sql_unescape(title);
+
+        typedef ArticleSet::index<by_title>::type ArticleByTitle;
+        ArticleByTitle::iterator to = articles.get<by_title>().find(title);
+        if (to == articles.get<by_title>().end())
+            return;
+
+        typedef ArticleSet::index<by_db_id>::type ArticleById;
+        ArticleById::iterator from = articles.get<by_db_id>().find(cur_from);
+        if (from == articles.get<by_db_id>().end())
+            return;
+
+        unsigned from_idx = articles.project<0>(from) - articles.begin(),
+                 to_idx   = articles.project<0>(to)   - articles.begin();
+
+        mat(from_idx, to_idx) = 1.;
+        incoming[to_idx] += 1;
     }
 };
 
@@ -78,11 +83,9 @@ struct InsertLink : public grammar<InsertLink>
     AssignLinkActor assign_link;
     unsigned cur_from, cur_ns;
 
-    InsertLink(Matrix &mat,
-               boost::unordered_map<unsigned, unsigned> const &widtoid,
-               boost::unordered_map<string, unsigned> const &titletoid,
+    InsertLink(ArticleSet &articles, Matrix &mat,
                vector<unsigned> &incoming)
-      : assign_link(cur_from, cur_ns, mat, widtoid, titletoid, incoming)
+      : assign_link(cur_from, cur_ns, articles, mat, incoming)
     {
     }
 
@@ -150,9 +153,7 @@ struct InsertLink : public grammar<InsertLink>
     };
 };
 
-void parse_linktable(istream &input, Matrix &mat,
-                     boost::unordered_map<unsigned, unsigned> const &wid_to_id,
-                     boost::unordered_map<string, unsigned> const &title_to_wid,
+void parse_linktable(istream &input, ArticleSet &articles, Matrix &mat,
                      vector<unsigned> &incoming)
 {
     namespace spirit = boost::spirit;
@@ -161,7 +162,6 @@ void parse_linktable(istream &input, Matrix &mat,
     logmsg("parsing link table");
 
     parse_info<spirit::istream_iterator> info;
-    info = parse(spirit::istream_iterator(input),
-                 spirit::istream_iterator(),
-                 InsertLink(mat, wid_to_id, title_to_wid, incoming), space_p);
+    info = parse(spirit::istream_iterator(input), spirit::istream_iterator(),
+                 InsertLink(articles, mat, incoming), space_p);
 }
