@@ -34,7 +34,9 @@ bin_PROGRAMS = wikiassoc$(EXEEXT)
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/ax_boost_base.m4 \
+	$(top_srcdir)/m4/ax_boost_iostreams.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -48,7 +50,8 @@ am_wikiassoc_OBJECTS = logmsg.$(OBJEXT) main.$(OBJEXT) \
 	parse_linktable.$(OBJEXT) parse_pagetable.$(OBJEXT) \
 	sql_unescape.$(OBJEXT)
 wikiassoc_OBJECTS = $(am_wikiassoc_OBJECTS)
-wikiassoc_DEPENDENCIES =
+am__DEPENDENCIES_1 =
+wikiassoc_DEPENDENCIES = $(am__DEPENDENCIES_1)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -68,9 +71,14 @@ AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
+BOOST_CPPFLAGS = @BOOST_CPPFLAGS@
+BOOST_IOSTREAMS_LIB = @BOOST_IOSTREAMS_LIB@
+BOOST_LDFLAGS = @BOOST_LDFLAGS@
+CC = @CC@
+CCDEPMODE = @CCDEPMODE@
+CFLAGS = @CFLAGS@
 CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
-CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
 CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
@@ -79,9 +87,7 @@ DEPDIR = @DEPDIR@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
-EGREP = @EGREP@
 EXEEXT = @EXEEXT@
-GREP = @GREP@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -111,6 +117,7 @@ abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
+ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
 am__include = @am__include@
 am__leading_dot = @am__leading_dot@
@@ -149,10 +156,11 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+AM_CPPFLAGS = $(BOOST_CPPFLAGS)
 AM_CXXFLAGS = $(OPENMP_CXXFLAGS)
-AM_LDFLAGS = $(OPENMP_LDFLAGS)
+AM_LDFLAGS = $(OPENMP_LDFLAGS) $(BOOST_LDFLAGS)
 wikiassoc_SOURCES = logmsg.cc main.cc open_input.cc output.cc parse_linktable.cc parse_pagetable.cc sql_unescape.cc
-wikiassoc_LDADD = -lboost_iostreams -lbz2 -lz
+wikiassoc_LDADD = $(BOOST_IOSTREAMS_LIB)
 all: all-am
 
 .SUFFIXES:
