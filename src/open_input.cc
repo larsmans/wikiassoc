@@ -18,24 +18,22 @@
 namespace io = boost::iostreams;
 using namespace std;
 
-namespace {
-    class InputStream : public io::filtering_istream {
-        ifstream file;
+class InputStream : public io::filtering_istream {
+    ifstream file;
 
-      public:
-        InputStream(char const *path)
-         : file(path, ios_base::in | ios_base::binary)
-        {
-            using boost::algorithm::iends_with;
+  public:
+    InputStream(char const *path)
+     : file(path, ios_base::in | ios_base::binary)
+    {
+        using boost::algorithm::iends_with;
 
-            if (iends_with(path, ".gz"))
-                push(io::gzip_decompressor());
-            else if (iends_with(path, ".bz2"))
-                push(io::bzip2_decompressor());
-            push(file);
-        }
-    };
-}
+        if (iends_with(path, ".gz"))
+            push(io::gzip_decompressor());
+        else if (iends_with(path, ".bz2"))
+            push(io::bzip2_decompressor());
+        push(file);
+    }
+};
 
 /**
  * Open input file, return istream* with gzip or bzip2 decompressor
