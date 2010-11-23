@@ -1,0 +1,17 @@
+*.o
+
+# Vim temporaries
+.*.swp
+.*.swo
+
+# Autotools-generated
+*~
+Makefile
+src/Makefile
+autom4te/
+config.h
+config.guess
+config.log
+config.status
+config.sub
+stamp-h1
