@@ -1,4 +1,5 @@
 *.o
+.deps/
 
 # Vim temporaries
 .*.swp
@@ -8,7 +9,7 @@
 *~
 Makefile
 src/Makefile
-autom4te/
+autom4te.cache/
 config.h
 config.guess
 config.log

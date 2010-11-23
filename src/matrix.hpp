@@ -10,7 +10,14 @@
 #ifndef _MATRIX_HPP
 #define _MATRIX_HPP
 
-#include <boost/unordered_map.hpp>
+#include "config.h"
+
+#ifdef HAVE_GOOGLE_SPARSE_HASH_MAP
+#   include <google/sparse_hash_map>
+#else
+#   include <boost/unordered_map.hpp>
+#endif
+
 #include <algorithm>
 #include <iosfwd>
 #include <utility>
@@ -23,7 +30,11 @@
  * (see operator()) and cut memory use by half.
  */
 class Matrix {
-    typedef boost::unordered_map<unsigned, Real> row_type;
+    #ifdef HAVE_GOOGLE_SPARSE_HASH_MAP
+        typedef google::sparse_hash_map<unsigned, Real> row_type;
+    #else
+        typedef boost::unordered_map<unsigned, Real> row_type;
+    #endif
     std::vector<row_type> rows;
 
   public:
@@ -38,7 +49,7 @@ class Matrix {
 //      if (i < j)
 //          std::swap(i,j);
         row_type::const_iterator rij = rows[i].find(j);
-        return (rij == rows[i].cend()) ? 0. : rij->second;
+        return (rij == rows[i].end()) ? 0. : rij->second;
     }
 
     /**

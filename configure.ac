@@ -22,6 +22,17 @@ AC_CHECK_LIB([z], [gzread])
 AX_BOOST_BASE([1.37])
 AX_BOOST_IOSTREAMS
 
+AC_ARG_WITH([google-sparsehash],
+            [AS_HELP_STRING([--with-google-sparsehash[=DIR]],
+              [Use Google sparsehash library for smaller memory footprint
+               (enabled by default if detected)])],
+            [],
+            [with_google_sparsehash=check])
+AS_IF([test "x$with_google_sparsehash" != xno],
+      [AS_IF([test "x$with_google_sparsehash" != xcheck],
+             [CPPFLAGS="${CPPFLAGS} -I${with_google_sparsehash}/include"])]
+      [AC_CHECK_HEADERS([google/sparse_hash_map])])
+
 # Checks for typedefs, structures, and compiler characteristics.
 AC_OPENMP
 
