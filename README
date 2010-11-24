@@ -8,9 +8,12 @@ software).
 To build and install Wikiassoc, you need a fairly modern C++ compiler
 (tested with GCC 4.3 and Open64 4.2.2.2), the Boost libraries from
 http://www.boost.org/ (including the Boost IOStreams library), zlib from
-http://zlib.net/ and bzlib from http://www.bzip.org/. It is highly advisable
-to use a C++ compiler that supports OpenMP, as Wikiassoc will be very slow
-without it.
+http://zlib.net/ and bzlib from http://www.bzip.org/.
+
+It is highly advisable to use
+* a C++ compiler that supports OpenMP
+* the google-sparsehash library (http://code.google.com/p/google-sparsehash/)
+as Wikiassoc will be very slow or consume huge amounts of memory without these.
 
 Wikiassoc uses the GNU build tools. Enter
     ./configure && make && make install
@@ -36,7 +39,7 @@ and run the Wikiassoc program as
 (Using gzip is highly recommended, as Wikiassoc produces a lot of output.)
 
 You will get a log of what's happening on stderr. Note that Wikiassoc takes
-a *lot* of memory; on the larger Wikipedias, it may be as much as 50GB or
+a *lot* of memory; on the larger Wikipedias, it may be as much as 12GB or
 more.
 
 In lawiki-associations.gz, you will find a text file with terms and indented
@@ -55,8 +58,8 @@ associations for the term:
         Terra
 
 
-What does it do?
-----------------
+How does it work?
+-----------------
 
 For each article in the Wikipedia database dump, Wikiassoc looks at all the
 articles that can be reached by following at most two links. It then weighs

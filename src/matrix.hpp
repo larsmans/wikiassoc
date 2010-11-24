@@ -32,13 +32,25 @@
 class Matrix {
     #ifdef HAVE_GOOGLE_SPARSE_HASH_MAP
         typedef google::sparse_hash_map<unsigned, Real> row_type;
+        // google::sparse_hash_map wants a special "deleted key" value
+        // to enable erase() to work
+        static const unsigned DELETED = UINT_MAX;
     #else
         typedef boost::unordered_map<unsigned, Real> row_type;
     #endif
     std::vector<row_type> rows;
 
   public:
-    Matrix(unsigned nr) : rows(nr) { }
+    Matrix(unsigned nr) : rows(nr)
+    {
+        #ifdef HAVE_GOOGLE_SPARSE_HASH_MAP
+            int i, n = nrows();
+
+            #pragma omp parallel for
+            for (i=0; i<n; i++)
+                rows[i].set_deleted_key(DELETED);
+        #endif
+    }
 
     /**
      * Returns the element at row i, column j.
