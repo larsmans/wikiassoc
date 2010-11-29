@@ -19,7 +19,7 @@ AC_PROG_INSTALL
 AC_CHECK_LIB([bz2], [BZ2_bzRead])
 AC_CHECK_LIB([z], [gzread])
 
-AX_BOOST_BASE([1.37])
+AX_BOOST_BASE([1.42])
 AX_BOOST_IOSTREAMS
 
 AC_ARG_WITH([google-sparsehash],
