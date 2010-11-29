@@ -1,0 +1,49 @@
+.TH WIKIASSOC "1" "November 2010"
+.SH NAME
+Wikiassoc \- generate associative thesaurus from MediaWiki database dump
+.SH SYNOPSIS
+.B wikiassoc
+[\fB-n\fR \fIN\fR] [\fB-qw\fR] \fIpagedump\fR \fIlinkdump\fR
+.SH DESCRIPTION
+Wikiassoc creates an associative thesaurus,
+a mapping from concepts to related concepts,
+by analyzing the link structure of a MediaWiki-based wiki,
+such as the Wikipedia.
+.PP
+Wikiassoc requires two files to run: a
+.I pagedump
+and a
+.IR linkdump .
+For the Wikipedia, these files can be obtained from
+.BR http://download.wikimedia.org .
+Both files may be compressed using
+.BR gzip (1)
+or
+.BR bzip2 (1).
+.PP
+Wikiassoc will generate output on stdout
+and log information on stderr.
+.\" TODO describe output format
+.SH OPTIONS
+.TP
+.BI \-n N
+Generate \fIN\fR associations per term/article.
+.TP
+.B \-q
+Quiet mode, no logging info (except in the case of failure).
+.TP
+.B \-w
+Output weights per association.
+.SH ENVIRONMENT
+If Wikiassoc was built with multithreading support
+(enabled by default if the compiler supports OpenMP),
+the number of threads used is controlled by the environment variable
+.BR OMP_NUM_THREADS .
+.SH NOTES
+Generating an associative thesaurus from the larger Wikipedias
+may take up to several hours of computing time
+and several gigabytes of memory
+(one hour and twenty minutes, 12GB
+for the Dutch Wikipedia dump of November 2010).
+.SH AUTHOR
+Lars Buitinck.
