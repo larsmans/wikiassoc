@@ -38,5 +38,6 @@ AC_OPENMP
 
 
 AC_CONFIG_FILES([Makefile
+                 man/Makefile
                  src/Makefile])
 AC_OUTPUT

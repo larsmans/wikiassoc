@@ -23,6 +23,12 @@ or
 .PP
 Wikiassoc will generate output on stdout
 and log information on stderr.
+Since Wikiassoc produces large amounts of output,
+it may be advisable to redirect stdout to a
+.BR gzip (1)
+or
+.BR bzip2 (1)
+pipe.
 .\" TODO describe output format
 .SH OPTIONS
 .TP
@@ -33,7 +39,8 @@ Generate \fIN\fR associations per term/article.
 Quiet mode, no logging info (except in the case of failure).
 .TP
 .B \-w
-Output weights per association.
+Output numeric weights per association.
+Weights are non-normalized pf\-ibf values.
 .SH ENVIRONMENT
 If Wikiassoc was built with multithreading support
 (enabled by default if the compiler supports OpenMP),
@@ -44,6 +51,7 @@ Generating an associative thesaurus from the larger Wikipedias
 may take up to several hours of computing time
 and several gigabytes of memory
 (one hour and twenty minutes, 12GB
-for the Dutch Wikipedia dump of November 2010).
+for the Dutch Wikipedia dump of November 2010
+on a single 3GHz AMD Opteron processor core).
 .SH AUTHOR
 Lars Buitinck.

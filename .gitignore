@@ -1,5 +1,7 @@
+# Object files and dependencies
 *.o
 .deps/
+src/wikiassoc
 
 # Vim temporaries
 .*.swp
