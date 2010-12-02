@@ -1,4 +1,4 @@
-.TH WIKIASSOC "1" "November 2010"
+.TH WIKIASSOC "1" "December 2010"
 .SH NAME
 Wikiassoc \- generate associative thesaurus from MediaWiki database dump
 .SH SYNOPSIS
@@ -9,6 +9,13 @@ Wikiassoc creates an associative thesaurus,
 a mapping from concepts to related concepts,
 by analyzing the link structure of a MediaWiki-based wiki,
 such as the Wikipedia.
+It does so by computing the
+.I pf-ibf
+statistic for each pair of articles; see the section
+.BR REFERENCES ,
+below.
+An article is defined as a page in namespace 0,
+so discussion pages and meta-pages are not taken into account.
 .PP
 Wikiassoc requires two files to run: a
 .I pagedump
@@ -29,18 +36,29 @@ it may be advisable to redirect stdout to a
 or
 .BR bzip2 (1)
 pipe.
-.\" TODO describe output format
+.PP
+Wikiassoc produces stanzas consisting of a term (article title)
+starting at the beginning of a line,
+followed by the associated terms,
+on a line starting with some amount of whitespace.
+Note that MediaWiki titles are not allowed to contain whitespace;
+they contain underscores
+.RB ( _ )
+instead.
 .SH OPTIONS
 .TP
 .BI \-n N
-Generate \fIN\fR associations per term/article.
+Generate max. \fIN\fR associations per term/article, default 10.
+Some (sparsely linked) terms may have fewer associations.
 .TP
 .B \-q
 Quiet mode, no logging info (except in the case of failure).
 .TP
 .B \-w
 Output numeric weights per association.
-Weights are non-normalized pf\-ibf values.
+Weights are non-normalized
+.I pf\-ibf
+values, mostly useful for debugging purposes.
 .SH ENVIRONMENT
 If Wikiassoc was built with multithreading support
 (enabled by default if the compiler supports OpenMP),
@@ -53,5 +71,17 @@ and several gigabytes of memory
 (one hour and twenty minutes, 12GB
 for the Dutch Wikipedia dump of November 2010
 on a single 3GHz AMD Opteron processor core).
+.SH REFERENCES
+.LP
+K. Nakayama, T. Hara and S. Nishio (2007).
+Wikipedia Mining for an Association Web Thesaurus Construction.
+In
+.IR "Proc. Int'l Conf. on Web Information Systems Engineering (WISE)" ,
+pp. 322-334.
+.SH BUGS
+Wikiassoc ignores redirect pages.
+The output format is big and clunky;
+something more compact should be implemented instead.
+RDF output would be nice as well.
 .SH AUTHOR
-Lars Buitinck.
+Lars Buitinck, University of Groningen.
