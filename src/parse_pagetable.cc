@@ -135,7 +135,7 @@ void parse_pagetable(std::istream &input, ArticleSet &articles)
 {
     namespace spirit = boost::spirit;
 
-    input.unsetf(ios::skipws);
+    input.unsetf(std::ios::skipws);
     logmsg("parsing page table");
 
     parse_info<spirit::istream_iterator> info;
