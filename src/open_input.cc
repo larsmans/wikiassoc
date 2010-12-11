@@ -16,14 +16,13 @@
 #include "wikiassoc.hpp"
 
 namespace io = boost::iostreams;
-using namespace std;
 
 class InputStream : public io::filtering_istream {
-    ifstream file;
+    std::ifstream file;
 
   public:
     InputStream(char const *path)
-     : file(path, ios_base::in | ios_base::binary)
+     : file(path, std::ios_base::in | std::ios_base::binary)
     {
         using boost::algorithm::iends_with;
 
@@ -39,7 +38,7 @@ class InputStream : public io::filtering_istream {
  * Open input file, return istream* with gzip or bzip2 decompressor
  * stacked in if necessary.
  */
-istream *open_input(char const *path)
+std::istream *open_input(char const *path)
 {
     return new InputStream(path);
 }

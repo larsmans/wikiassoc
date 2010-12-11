@@ -12,7 +12,7 @@
 #include <boost/spirit/include/classic_assign_actor.hpp>
 #include <boost/spirit/include/classic_assign_key_actor.hpp>
 #include <boost/spirit/include/support_istream_iterator.hpp>
-#include <iostream>
+#include <istream>
 #include <string>
 #include <utility>
 
@@ -41,7 +41,7 @@ struct AssignTitleActor
     void operator()(Iter s, Iter end) const
     {
         if (cur_ns == WIKIPEDIA_MAIN_NS) {
-            string title(s,end);
+            std::string title(s,end);
             sql_unescape(title);
             articles.push_back(Article(title, cur_id));
         }
@@ -131,7 +131,7 @@ struct InsertPage : public grammar<InsertPage>
     };
 };
 
-void parse_pagetable(istream &input, ArticleSet &articles)
+void parse_pagetable(std::istream &input, ArticleSet &articles)
 {
     namespace spirit = boost::spirit;
 

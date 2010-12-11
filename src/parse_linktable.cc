@@ -12,7 +12,7 @@
 #include <boost/spirit/include/classic_assign_actor.hpp>
 #include <boost/spirit/include/classic_assign_key_actor.hpp>
 #include <boost/spirit/include/support_istream_iterator.hpp>
-#include <iostream>
+#include <istream>
 #include <string>
 #include <utility>
 
@@ -34,7 +34,7 @@ struct AssignLinkActor
 {
     ArticleSet &articles;
     Matrix &mat;
-    vector<unsigned> &incoming;
+    std::vector<unsigned> &incoming;
     unsigned &cur_from, &cur_ns;
 
     AssignLinkActor(unsigned &from, unsigned &ns, ArticleSet &arts, Matrix &m,
@@ -50,7 +50,7 @@ struct AssignLinkActor
         if (cur_ns != WIKIPEDIA_MAIN_NS)
             return;
 
-        string title(s,end);
+        std::string title(s,end);
         sql_unescape(title);
 
         typedef ArticleSet::index<by_title>::type ArticleByTitle;
@@ -84,7 +84,7 @@ struct InsertLink : public grammar<InsertLink>
     unsigned cur_from, cur_ns;
 
     InsertLink(ArticleSet &articles, Matrix &mat,
-               vector<unsigned> &incoming)
+               std::vector<unsigned> &incoming)
       : assign_link(cur_from, cur_ns, articles, mat, incoming)
     {
     }
@@ -153,12 +153,12 @@ struct InsertLink : public grammar<InsertLink>
     };
 };
 
-void parse_linktable(istream &input, ArticleSet &articles, Matrix &mat,
-                     vector<unsigned> &incoming)
+void parse_linktable(std::istream &input, ArticleSet &articles, Matrix &mat,
+                     std::vector<unsigned> &incoming)
 {
     namespace spirit = boost::spirit;
 
-    input.unsetf(ios::skipws);
+    input.unsetf(std::ios::skipws);
     logmsg("parsing link table");
 
     parse_info<spirit::istream_iterator> info;
