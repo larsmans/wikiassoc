@@ -23,10 +23,11 @@ namespace {
     void usage(char const *progname)
     {
         std::cerr << "usage: " << progname
-                  << " [-n N] [-qw] pagedump linkdump\n"
-                  << "    -n N  output N associations per term, default 10\n"
-                  << "    -q    quiet; no log output to standard error\n"
-                  << "    -w    output pf-ibf weights with associations\n"
+                  << " [-e RE] [-n N] [-qw] pagedump linkdump\n"
+                  << "    -e RE  exclude titles matching RE in output\n"
+                  << "    -n N   output N associations per term, default 10\n"
+                  << "    -q     quiet; no log output to standard error\n"
+                  << "    -w     output pf-ibf weights with associations\n"
         ;
         std::exit(1);
     }
@@ -35,10 +36,14 @@ namespace {
 int main(int argc, char *argv[])
 {
     bool output_weights = false;
+    boost::regex exclude("^$");
     std::size_t n_out = 10;    // number of associations per term to output
 
-    for (int opt; (opt = getopt(argc, argv, "n:qw")) != -1; ) {
+    for (int opt; (opt = getopt(argc, argv, "e:n:qw")) != -1; ) {
         switch (opt) {
+          case 'e':
+            exclude = optarg;
+            break;
           case 'n':
             try {
                 n_out = boost::lexical_cast<std::size_t>(optarg);
@@ -91,7 +96,7 @@ int main(int argc, char *argv[])
         r.transform(normalize<2>);
 
         logmsg("writing output");
-        r.output(n_out, output_weights, articles);
+        r.output(n_out, output_weights, exclude, articles);
 
         logmsg("done");
     } catch (std::bad_alloc const &e) {

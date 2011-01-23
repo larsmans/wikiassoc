@@ -3,7 +3,7 @@
 Wikiassoc \- generate associative thesaurus from MediaWiki database dump
 .SH SYNOPSIS
 .B wikiassoc
-[\fB-n\fR \fIN\fR] [\fB-qw\fR] \fIpagedump\fR \fIlinkdump\fR
+[\fB-e\fR \fIRE\fR] [\fB-n\fR \fIN\fR] [\fB-qw\fR] \fIpagedump\fR \fIlinkdump\fR
 .SH DESCRIPTION
 Wikiassoc creates an associative thesaurus,
 a mapping from concepts to related concepts,
@@ -47,7 +47,17 @@ they contain underscores
 instead.
 .SH OPTIONS
 .TP
-.BI \-n N
+.BI \-e\  RE
+Exclude terms/titles matching the regular expression
+.I RE
+in the output phase.
+Such terms are still used in the
+.I pf\-ibf
+computation.
+The regular expression syntax is a subset of that of Perl; see
+.BR perlre (1).
+.TP
+.BI \-n\  N
 Generate max. \fIN\fR associations per term/article, default 10.
 Some (sparsely linked) terms may have fewer associations.
 .TP

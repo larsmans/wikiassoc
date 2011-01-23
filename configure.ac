@@ -9,6 +9,7 @@ AC_CONFIG_HEADERS([config.h])
 
 m4_include([m4/ax_boost_base.m4])
 m4_include([m4/ax_boost_iostreams.m4])
+m4_include([m4/ax_boost_regex.m4])
 
 # Checks for programs.
 AC_PROG_CXX
@@ -21,6 +22,7 @@ AC_CHECK_LIB([z], [gzread])
 
 AX_BOOST_BASE([1.42])
 AX_BOOST_IOSTREAMS
+AX_BOOST_REGEX
 
 AC_ARG_WITH([google-sparsehash],
             [AS_HELP_STRING([--with-google-sparsehash[=DIR]],

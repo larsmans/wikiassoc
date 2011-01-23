@@ -7,6 +7,7 @@
  * (at your option) any later version.
  */
 
+#include <boost/iterator/filter_iterator.hpp>
 #include <algorithm>
 #include <iostream>
 #include <sstream>
@@ -21,32 +22,51 @@
 namespace {
     /* Reverse comparison by second member */
     template <typename T, typename U>
-    inline bool lt_snd_rev(std::pair<T,U> const &x, std::pair<T,U> const &y)
+    inline bool GtBySecond(std::pair<T,U> const &x, std::pair<T,U> const &y)
     {
         return x.second > y.second;
     }
+
+    class IncludeFilter
+    {
+        ArticleSet const &articles;
+        boost::regex const &exclude;
+
+      public:
+        IncludeFilter(boost::regex const &excl, ArticleSet const &as)
+          : articles(as), exclude(excl) {}
+
+        bool operator()(std::pair<unsigned, Real> const &iw)
+        { return not boost::regex_match(articles[iw.first].title, exclude); }
+    };
 }
 
 /**
  * Write at most n_out term associations, sorted by relevance (pf-ibf score)
- * to std::cout.
+ * to std::cout. Skips over terms that match the RE exclude.
  *
  * If weights == true, output scores as well.
  */
 void Matrix::output(std::size_t n_out, bool weights,
+                    boost::regex const &exclude,
                     ArticleSet const &articles) const
 {
     int i, n = nrows();
+    IncludeFilter include(exclude, articles);
 
     #pragma omp parallel for
     for (i=0; i<n; i++) {
         std::vector<std::pair<unsigned, Real> > related(n_out);
+
+        // Filter by the RE first, so we still get n_out items if possible
+        boost::filter_iterator<IncludeFilter, row_type::const_iterator>
+            begin(include, rows[i].begin(), rows[i].end()),
+            end(  include, rows[i].end(),   rows[i].end());
+
         related.erase(
-                std::partial_sort_copy(rows[i].begin(),
-                                       rows[i].end(),
-                                       related.begin(), 
-                                       related.end(),
-                                       lt_snd_rev<unsigned, Real>),
+                std::partial_sort_copy(begin, end,
+                                       related.begin(), related.end(),
+                                       GtBySecond<unsigned, Real>),
                 related.end()
             );
 

@@ -18,8 +18,10 @@
 #   include <boost/unordered_map.hpp>
 #endif
 
+#include <boost/regex.hpp>
 #include <algorithm>
 #include <iosfwd>
+#include <memory>
 #include <utility>
 #include <vector>
 
@@ -118,7 +120,8 @@ class Matrix {
             rows[i].erase(i);
     }
 
-    void output(std::size_t, bool, ArticleSet const &) const;
+    void output(std::size_t, bool, boost::regex const &, ArticleSet const &)
+        const;
 
     /**
      * Apply transformation (function/functional) op to all non-zero elements
