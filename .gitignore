@@ -10,11 +10,19 @@ src/wikiassoc
 # Autotools-generated
 *~
 Makefile
-src/Makefile
+Makefile.in
+aclocal.m4
 autom4te.cache/
 config.h
 config.guess
 config.log
 config.status
 config.sub
+configure
+install-sh
+man/Makefile
+man/Makefile.in
+missing
+src/Makefile
+src/Makefile.in
 stamp-h1

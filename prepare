@@ -1,0 +1,3 @@
+#!/bin/sh
+# Prepare for build by invoking autotools
+aclocal && automake --add-missing --copy && autoconf

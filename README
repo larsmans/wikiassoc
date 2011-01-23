@@ -8,7 +8,8 @@ software).
 To build and install Wikiassoc, you need a fairly modern C++ compiler
 (tested with GCC 4.3 and Open64 4.2.2.2), the Boost libraries from
 http://www.boost.org/ (including the Boost IOStreams library), zlib from
-http://zlib.net/ and bzlib from http://www.bzip.org/.
+http://zlib.net/, bzlib from http://www.bzip.org/ and the GNU autools
+(autoconf and automake).
 
 It is highly advisable to use
 * a C++ compiler that supports OpenMP
@@ -16,7 +17,7 @@ It is highly advisable to use
 as Wikiassoc will be very slow or consume huge amounts of memory without these.
 
 Wikiassoc uses the GNU build tools. Enter
-    ./configure && make && make install
+    ./prepare && ./configure && make && make install
 or see the file INSTALL for more detailed instructions. Currently, this only
 installs a binary called wikiassoc.
 
