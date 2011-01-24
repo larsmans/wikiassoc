@@ -36,8 +36,11 @@ namespace {
         IncludeFilter(boost::regex const &excl, ArticleSet const &as)
           : articles(as), exclude(excl) {}
 
+        bool operator()(unsigned i)
+        { return not boost::regex_match(articles[i].title, exclude); }
+
         bool operator()(std::pair<unsigned, Real> const &iw)
-        { return not boost::regex_match(articles[iw.first].title, exclude); }
+        { return operator()(iw.first); }
     };
 }
 
@@ -56,6 +59,9 @@ void Matrix::output(std::size_t n_out, bool weights,
 
     #pragma omp parallel for
     for (i=0; i<n; i++) {
+        if (!include(i))
+            continue;
+
         std::vector<std::pair<unsigned, Real> > related(n_out);
 
         // Filter by the RE first, so we still get n_out items if possible
