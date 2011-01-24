@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Lars Buitinck
+ * Copyright 2010-2011 Lars Buitinck
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,6 @@
 #include "article.hpp"
 
 using namespace BOOST_SPIRIT_CLASSIC_NS;
-using namespace std;
 
 /*
  * Semantic action functor that stores the title/id pair

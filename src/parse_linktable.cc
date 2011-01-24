@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Lars Buitinck
+ * Copyright 2010-2011 Lars Buitinck
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,6 @@
 #include "matrix.hpp"
 
 using namespace BOOST_SPIRIT_CLASSIC_NS;
-using namespace std;
 
 /*
  * Semantic action functor that stores the from_id/to_id pair in the
@@ -38,7 +37,7 @@ struct AssignLinkActor
     unsigned &cur_from, &cur_ns;
 
     AssignLinkActor(unsigned &from, unsigned &ns, ArticleSet &arts, Matrix &m,
-                    vector<unsigned> &incoming_)
+                    std::vector<unsigned> &incoming_)
       : articles(arts), cur_from(from), cur_ns(ns), mat(m),
         incoming(incoming_)
     {

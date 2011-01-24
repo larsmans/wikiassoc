@@ -1,2 +1,5 @@
+2011-01-23  Lars Buitinck  <larsmans@gmail.com>
+  * Added regex filtering support
+
 2010-10-23  Lars Buitinck  <larsmans@gmail.com>
   * Added support for Google sparsehash table
