@@ -21,7 +21,7 @@
 #include "article.hpp"
 #include "matrix.hpp"
 
-using namespace BOOST_SPIRIT_CLASSIC_NS;
+namespace spc = BOOST_SPIRIT_CLASSIC_NS;
 
 /*
  * Semantic action functor that stores the from_id/to_id pair in the
@@ -77,7 +77,7 @@ struct AssignLinkActor
  * as used by Wikipedia and documented at
  * http://www.mediawiki.org/wiki/Manual:Pagelinks_table
  */
-struct InsertLink : public grammar<InsertLink>
+struct InsertLink : public spc::grammar<InsertLink>
 {
     AssignLinkActor assign_link;
     unsigned cur_from, cur_ns;
@@ -92,6 +92,8 @@ struct InsertLink : public grammar<InsertLink>
     struct definition {
         definition(InsertLink const &self)
         {
+            using namespace spc;
+
             // note: short-circuited |
             strt
                 =   *(insert_stmt | comment | other_stmt)
@@ -144,10 +146,10 @@ struct InsertLink : public grammar<InsertLink>
                 ;
         }
 
-        rule<Scanner> strt, insert_stmt, other_stmt, values, value,
-                  quoted_string, quoted_text, qchar, comment;
+        spc::rule<Scanner> strt, insert_stmt, other_stmt, values, value,
+                          quoted_string, quoted_text, qchar, comment;
 
-        rule<Scanner> const &start() const
+        spc::rule<Scanner> const &start() const
         { return strt; }
     };
 };
@@ -160,7 +162,7 @@ void parse_linktable(std::istream &input, ArticleSet &articles, Matrix &mat,
     input.unsetf(std::ios::skipws);
     logmsg("parsing link table");
 
-    parse_info<spirit::istream_iterator> info;
+    spc::parse_info<spirit::istream_iterator> info;
     info = parse(spirit::istream_iterator(input), spirit::istream_iterator(),
-                 InsertLink(articles, mat, incoming), space_p);
+                 InsertLink(articles, mat, incoming), spc::space_p);
 }

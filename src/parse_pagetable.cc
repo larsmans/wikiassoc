@@ -20,7 +20,7 @@
 
 #include "article.hpp"
 
-using namespace BOOST_SPIRIT_CLASSIC_NS;
+namespace spc = BOOST_SPIRIT_CLASSIC_NS;
 
 /*
  * Semantic action functor that stores the title/id pair
@@ -54,7 +54,7 @@ struct AssignTitleActor
  * as used by Wikipedia and documented at
  * http://www.mediawiki.org/wiki/Manual:Page_table
  */
-struct InsertPage : public grammar<InsertPage>
+struct InsertPage : public spc::grammar<InsertPage>
 {
     AssignTitleActor assign_title;
     unsigned cur_id, cur_ns;
@@ -68,6 +68,8 @@ struct InsertPage : public grammar<InsertPage>
     struct definition {
         definition(InsertPage const &self)
         {
+            using namespace spc;
+
             // note: short-circuited |
             strt
                 =   *(insert_stmt | comment | other_stmt)
@@ -122,10 +124,10 @@ struct InsertPage : public grammar<InsertPage>
                 ;
         }
 
-        rule<Scanner> strt, insert_stmt, other_stmt, values, value,
-                  quoted_string, quoted_text, qchar, comment;
+        spc::rule<Scanner> strt, insert_stmt, other_stmt, values, value,
+                           quoted_string, quoted_text, qchar, comment;
 
-        rule<Scanner> const &start() const
+        spc::rule<Scanner> const &start() const
         { return strt; }
     };
 };
@@ -137,7 +139,7 @@ void parse_pagetable(std::istream &input, ArticleSet &articles)
     input.unsetf(std::ios::skipws);
     logmsg("parsing page table");
 
-    parse_info<spirit::istream_iterator> info;
+    spc::parse_info<spirit::istream_iterator> info;
     info = parse(spirit::istream_iterator(input), spirit::istream_iterator(),
-                 InsertPage(articles), space_p);
+                 InsertPage(articles), spc::space_p);
 }
