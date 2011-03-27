@@ -148,7 +148,7 @@ class Matrix {
     void square(Matrix &r) const { mult(*this, *this, r); }
 
   private:
-    static void mult(Matrix const &a, Matrix const &b, Matrix &r) throw()
+    static void mult(Matrix const &a, Matrix const &b, Matrix &r)
     {
         int i, n = a.nrows();
 
