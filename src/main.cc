@@ -39,32 +39,38 @@ int main(int argc, char *argv[])
     boost::regex exclude("^$");
     std::size_t n_out = 10;    // number of associations per term to output
 
-    for (int opt; (opt = getopt(argc, argv, "e:n:qw")) != -1; ) {
-        switch (opt) {
-          case 'e':
-            exclude = optarg;
-            break;
-          case 'n':
-            try {
-                n_out = boost::lexical_cast<std::size_t>(optarg);
-            } catch (boost::bad_lexical_cast const &e) {
+    try {
+        for (int opt; (opt = getopt(argc, argv, "e:n:qw")) != -1; ) {
+            switch (opt) {
+              case 'e':
+                exclude = optarg;
+                break;
+              case 'n':
+                try {
+                    n_out = boost::lexical_cast<std::size_t>(optarg);
+                } catch (boost::bad_lexical_cast const &e) {
+                    usage(argv[0]);
+                }
+                break;
+              case 'q':
+                quiet = true;
+                break;
+              case 'w':
+                output_weights = true;
+                break;
+              default:
                 usage(argv[0]);
             }
-            break;
-          case 'q':
-            quiet = true;
-            break;
-          case 'w':
-            output_weights = true;
-            break;
-          default:
-            usage(argv[0]);
         }
+        argc -= optind;
+        if (argc != 2)
+            usage(argv[0]);
+        argv += optind;
+    } catch (boost::regex_error const &e) {
+        // Boost.Regex error messages tend to be descriptive enough
+        std::cerr << argv[0] << ": error: " << e.what() << std::endl;
+        return 1;
     }
-    argc -= optind;
-    if (argc != 2)
-        usage(argv[0]);
-    argv += optind;
 
     try {
         // fail early if input files not readable
