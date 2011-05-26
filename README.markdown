@@ -4,6 +4,8 @@ Wikiassoc
 Wikiassoc is a tool for generating term associations by analyzing the link
 structure of Wikipedia (or any other wiki based on the
 [MediaWiki](http://mediawiki.org) software).
+You put in a Wikipedia database dump, and get out a table of terms
+(article titles) and the most strongly related terms.
 
 To build and install Wikiassoc, you need a fairly modern C++ compiler
 (tested with GCC 4.3 and Open64 4.2.2.2), the [Boost](http://www.boost.org)
